@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<widget xmlns = "http://www.w3.org/ns/widgets"
+xmlns:gap = "http://phonegap.com/ns/1.0"
+id = "com.utm.app"
+versionCode = "1"
+version = "1.0.0" >
+<!-- versionCode is optional and Android only -->
+<!-- version is in major.minor.patch format-->
+<name>Hybrid Mobile App</name>
+
+<description>UTM Website in a mobile Application. </description>
+<author href="https://build.phonegap.com" email="gimmal.28@gmail.com"> Languelale Gimmal, Bhoojhowon Keshav, Sowadoo Hansley </author>
+
+<platform name="android">
+        <!--
+            ldpi    : 36x36 px
+            mdpi    : 48x48 px
+            hdpi    : 72x72 px
+            xhdpi   : 96x96 px
+            xxhdpi  : 144x144 px
+            xxxhdpi : 192x192 px
+        -->
+        <icon src="img/mipmap-ldpi/utm.png" density="ldpi" />
+        <icon src="img/mipmap-mdpi/utm.png" density="mdpi" />
+        <icon src="img/mipmap-hdpi/utm.png" density="hdpi" />
+        <icon src="img/mipmap-xhdpi/utm.png" density="xhdpi" />
+        <icon src="img/mipmap-xxhdpi/utm.png" density="xxhdpi" />
+        <icon src="img/mipmap-xxxhdpi/utm.png" density="xxxhdpi" />
+    </platform>
+
+</widget>
