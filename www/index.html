@@ -1,0 +1,1983 @@
+<html lang="en">
+
+<head>
+
+	<title>Welcome To UTM</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="js/jquery.mobile-1.4.5.css" />
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script src="cordova.js"></script>
+
+
+	<script type="text/javascript">
+		document.addEventListener("deviceready", onDeviceReady, false);
+		var db;
+
+		function onDeviceReady() {
+			alert("device ready");
+
+			// Working With SQLite
+			db = window.openDatabase("utm_db", "1.0", "Hybrid Mobile App", 2 * 1024 * 1024);
+			db.transaction(createDB, errorCB, successCB);
+		}
+
+		function createDB(tx) {
+
+			//	tx.executeSql('DROP TABLE tblEvent');
+			//	tx.executeSql('DROP TABLE tblNews');
+			//	tx.executeSql('DROP TABLE tblStudent');
+			//	tx.executeSql('DROP TABLE tblStaff');
+
+			// Table Staff
+			tx.executeSql(
+				'CREATE TABLE IF NOT EXISTS tblStaff (staff_id int(11) NOT NULL,	staff_fname text NOT NULL,staff_lname text NOT NULL,staff_email varchar(25) NOT NULL,staff_phone varchar(8) NOT NULL,CONSTRAINT staff_id_pk PRIMARY KEY(staff_id),CONSTRAINT staff_email_uk UNIQUE (staff_email),CONSTRAINT staff_phone_uk UNIQUE (staff_phone))'
+			);
+			tx.executeSql('INSERT INTO tblStaff (staff_id,staff_fname,staff_lname,staff_email,staff_phone) VALUES (1,"Rolland","Jaylon","rolland@hotmail.com",57483621)');
+			tx.executeSql('INSERT INTO tblStaff (staff_id,staff_fname,staff_lname,staff_email,staff_phone) VALUES (2,"Didem","Avelina","didem@gmail.com",54334971)');
+			tx.executeSql('INSERT INTO tblStaff (staff_id,staff_fname,staff_lname,staff_email,staff_phone) VALUES (3," Susanna","Desmond","desmond@live.com",52937389)');
+			tx.executeSql('INSERT INTO tblStaff (staff_id,staff_fname,staff_lname,staff_email,staff_phone) VALUES (4,"Sunan","Desmond","sunan@live.com",52616587)');
+
+
+			// Table Student
+			tx.executeSql(
+				'CREATE TABLE IF NOT EXISTS tblStudent (std_id varchar(200) NOT NULL,std_Fname text NOT NULL,std_Lname text NOT NULL,std_age int(10) NOT NULL,std_phone int(10) NOT NULL,std_address varchar(200) NOT NULL,std_cohort text NOT NULL,std_timestamp DATETIME NOT NULL,std_image BLOB NULL,CONSTRAINT std_std_id_pk PRIMARY KEY(std_id),CONSTRAINT std_std_phone_uk UNIQUE(std_phone))'
+			);
+			tx.executeSql('INSERT INTO tblStudent (std_id,std_Fname,std_Lname,std_age,std_phone,std_address,std_cohort,std_timestamp,std_image) VALUES ("1803_15000","Rozanne","Cronus",20,52129838,"casernes","BSE18AFT","2019-09-25 11:30",NULL)');
+
+
+			// Table News
+			tx.executeSql(
+				'CREATE TABLE IF NOT EXISTS tblNews (news_id int(11) NOT NULL,  staff_id int(11),  std_id varchar(200),  news_title text NOT NULL,  news_timestamp DATETIME NOT NULL,  news_desc text NOT NULL,  news_image BLOB NULL,  CONSTRAINT news_news_id_pk PRIMARY KEY(news_id),  CONSTRAINT news_staff_id_fk FOREIGN KEY(staff_id)   REFERENCES tblStaff(staff_id),  CONSTRAINT news_std_id_fk FOREIGN KEY(std_id)  REFERENCES tblStudent(std_id))'
+			);
+			tx.executeSql('INSERT INTO tblNews (news_id,staff_id,std_id,news_title,news_timestamp,news_desc,news_image) VALUES (1,1,NULL,"Exam Entry Form","2019-09-17 09:00","Deadline 17/10/2019",NULL)');
+			tx.executeSql('INSERT INTO tblNews (news_id,staff_id,std_id,news_title,news_timestamp,news_desc,news_image) VALUES (2,2,NULL,"Student Election","2019-10-07 09:10","Require Student ID",NULL)');
+			tx.executeSql('INSERT INTO tblNews (news_id,staff_id,std_id,news_title,news_timestamp,news_desc,news_image) VALUES (3,3,NULL,"Student Week","2019-10-05 10:02","Fun Day",NULL)');
+			tx.executeSql('INSERT INTO tblNews (news_id,staff_id,std_id,news_title,news_timestamp,news_desc,news_image) VALUES (4,NULL,"1803_15000","Universade","2019-09-28 11:12","Register and form your teams",NULL)');
+			tx.executeSql('INSERT INTO tblNews (news_id,staff_id,std_id,news_title,news_timestamp,news_desc,news_image) VALUES (5,4,NULL,"UTM Adventurer Club","2019-09-25 11:30","Climbers join us",NULL)');
+
+
+			//Table Events
+
+			tx.executeSql(
+				'CREATE TABLE IF NOT EXISTS tblEvent (evt_id int(11) NOT NULL ,evt_title text NOT NULL,staff_id int(11) NOT NULL,evt_timestamp DATETIME NOT NULL,evt_address varchar(200) NOT NULL,evt_desc text NOT NULL,evt_image BLOB NULL,evt_Lat decimal(20,15),evt_Lon decimal(20,15),CONSTRAINT event_evt_id_pk PRIMARY KEY(evt_id),CONSTRAINT event_staff_id_fk FOREIGN KEY(staff_id)REFERENCES tblStaff(staff_id))'
+			);
+			tx.executeSql(
+				'INSERT INTO tblEvent (evt_id,evt_title,staff_id,evt_timestamp,evt_address,evt_desc,evt_image,evt_Lat,evt_Lon) VALUES (1,"MITIA SPORTS AND FUN DAY",1,"2019-09-17 09:11","la route de Cascavelle","sportifs et moins sportifs et toute taille",NULL,-20.289730,57.414902)'
+			);
+
+		}
+
+		function errorCB(err) {
+			alert("SQL Error: " + err.code);
+		}
+
+		function successCB() {
+			alert("Database & Table Created");
+		}
+	</script>
+
+</head>
+
+<body>
+	<!-- PAGE 1 -->
+	<div data-role="page" id="pageone" class="jqm-demos ui-responsive-panel" data-url="pageone">
+		<div data-role="header" style="overflow:hidden;" class="hea">
+			<a href="#popup_dialog" class="ui-btn-right" data-icon="user" data-rel="dialog" data-transition="pop">Login</a>
+			<img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+			<a href="#nav-panelhome" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+		</div>
+
+		<div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<div class="ui-bar ui-bar-a" style="height:100%">
+						<h3>News</h3>
+						<ul data-role="listview" data-inset="true">
+							<li data-role="list-divider">Friday, October 8, 2010 <span class="ui-li-count">2</span></li>
+							<li><a href="index.html">
+									<h2>Stephen Weber</h2>
+									<p><strong>You've been invited to a meeting at Filament Group in Boston, MA</strong></p>
+									<p>Hey Stephen, if you're available at 10am tomorrow, we've got a meeting with the jQuery team.</p>
+									<p class="ui-li-aside"><strong>6:24</strong>PM</p>
+								</a></li>
+							<li><a href="index.html">
+									<h2>jQuery Team</h2>
+									<p><strong>Boston Conference Planning</strong></p>
+									<p>In preparation for the upcoming conference in Boston, we need to start gathering a list of sponsors and speakers.</p>
+									<p class="ui-li-aside"><strong>9:18</strong>AM</p>
+								</a></li>
+							<li data-role="list-divider">Thursday, October 7, 2010 <span class="ui-li-count">1</span></li>
+							<li><a href="index.html">
+									<h2>Avery Walker</h2>
+									<p><strong>Re: Dinner Tonight</strong></p>
+									<p>Sure, let's plan on meeting at Highland Kitchen at 8:00 tonight. Can't wait!</p>
+									<p class="ui-li-aside"><strong>4:48</strong>PM</p>
+								</a></li>
+						</ul>
+					</div>
+				</div>
+
+
+			</div><!-- /grid-a -->
+		</div>
+
+		<div data-role="panel" data-display="push" id="nav-panelhome">
+			<ul data-role="listview">
+				<li><a href="#pageone">Home</a></li>
+				<li><a href="#pageevents">Events</a></li>
+				<li><a href="#pageschools">Schools</a></li>
+				<li><a href="#pageprogrammes">Programmes</a></li>
+				<li><a href="#pagestudent">Student</a></li>
+				<li><a href="#pageabout">About</a></li>
+			</ul>
+		</div><!-- /panel -->
+
+		<div data-role="footer" style="font-size:80%;">
+			<h5>
+				Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+		</div>
+	</div>
+
+
+
+
+
+
+	<div data-role="dialog" id="popup_dialog" data-dismissible="true" data-close-btn="right">
+		<div role="main" class="ui-content jqm-content jqm-fullwidth">
+			<h2 class="ui-title" id="loginDialog" style="text-align: center;">Login</h2>
+
+			<form id="loginForm">
+				<label for="UserName">User ID</label>
+				<input name="UserName" id="UserID" type="text" />
+
+				<label for="UserPass">Password</label>
+				<input name="UserPass" id="UserPass" autocomplete="off" type="password" />
+
+
+
+				<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
+					<legend>Login As:</legend>
+					<input name="radio-choice" id="radio-choice-1" value="student" checked="checked" type="radio">
+					<label for="radio-choice-1">Student</label>
+					<input name="radio-choice" id="radio-choice-2" value="staff" type="radio">
+					<label for="radio-choice-2">Staff</label>
+					<input name="radio-choice" id="radio-choice-3" value="admin" type="radio">
+					<label for="radio-choice-3">Admin</label>
+				</fieldset>
+
+
+				<div id="buttonDialog" style="">
+					<a href="#" class="ui-btn ui-btn-inline ui-btn-b">Login</a>
+					<a href="#" class="ui-btn ui-btn-inline ui-btn-b" data-rel="back">Cancel</a>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+
+
+	<!----------------------------------------------------------- PAGE SCHOOLS ---------------------------------------------------------------------- -->
+	<div data-role="page" id="pageschools" class="jqm-demos ui-responsive-panel" data-url="pageschools">
+		<div data-role="header" style="overflow:hidden;" class="hea">
+			<a href="#popup_dialog" class="ui-btn-right" data-icon="user" data-rel="dialog" data-transition="pop">Login</a>
+			<img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+			<a href="#nav-panelschool" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+		</div>
+
+		<div data-role="main" class="ui-content jqm-content jqm-fullwidth" id="schoolbody">
+
+
+			<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+				<div data-role="collapsible" style="margin-bottom: 10px;">
+					<h3>School of Business, Management and Finance (SBMF) </h3>
+
+					<div class="ui-grid-b">
+						<div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini" target="_blank">
+								<!-- <object data="pdf/SBMF/AmendedMBA_GeneralPT_23sep2013_.pdf" type="application/pdf" width="300" height="200"> -->
+								<!-- href="pdf/SBMF/AmendedMBA_GeneralPT_23sep2013_.pdf" </object> </a>-->
+								Undergraduate</a>
+						</div>
+
+						<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini" target="_blank">Postgraduate</a></div>
+
+						<div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini" target="_blank">Staff List</a></div>
+					</div>
+					<div class="ui-grid-b">
+						<div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Exam Timetable</a></div>
+						<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Semester TimeTable</a></div>
+						<div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Results</a></div>
+					</div>
+				</div>
+
+				<div data-role="collapsible" style="margin-bottom: 10px;">
+					<h3>School of Health Sciences (SHS)</h3>
+					<div class="ui-grid-b">
+						<div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Undergraduate</a></div>
+						<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Postgraduate</a></div>
+						<div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Staff List</a></div>
+					</div>
+					<div class="ui-grid-b">
+						<div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Exam Timetable</a></div>
+						<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Semester TimeTable</a></div>
+						<div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Results</a></div>
+					</div>
+				</div>
+				<div data-role="collapsible" style="margin-bottom: 10px;">
+					<h3>School of Innovative Technologies and Engineering (SITE)</h3>
+					<div class="ui-grid-b">
+						<div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Undergraduate</a></div>
+						<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Postgraduate</a></div>
+						<div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Staff List</a></div>
+					</div>
+					<div class="ui-grid-b">
+						<div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Exam Timetable</a></div>
+						<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Semester TimeTable</a></div>
+						<div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Results</a></div>
+					</div>
+				</div>
+				<div data-role="collapsible" style="margin-bottom: 10px;">
+					<h3>School of Sustainable Development and Tourism (SSDT)</h3>
+					<div class="ui-grid-b">
+						<div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Undergraduate</a></div>
+						<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Postgraduate</a></div>
+						<div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Staff List</a></div>
+					</div>
+					<div class="ui-grid-b">
+						<div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Exam Timetable</a></div>
+						<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Semester TimeTable</a></div>
+						<div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Results</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div data-role="panel" data-display="push" id="nav-panelschool">
+			<ul data-role="listview">
+				<li><a href="#pageone">Home</a></li>
+				<li><a href="#pageevents">Events</a></li>
+				<li><a href="#pageschools">Schools</a></li>
+				<li><a href="#pageprogrammes">Programmes</a></li>
+				<li><a href="#pagestudent">Student</a></li>
+				<li><a href="#pageabout">About</a></li>
+			</ul>
+		</div><!-- /panel -->
+
+		<div data-role="footer" style="font-size:80%;">
+			<h5>
+				Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+		</div>
+	</div>
+
+
+
+
+
+
+
+	<!-- -----------------------------------------------------------PAGE STUDENTS------------------------------------------------------------ -->
+	<div data-role="page" id="pagestudent" class="jqm-demos ui-responsive-panel" data-url="pagestudent">
+		<div data-role="header" style="overflow:hidden;" class="hea">
+			<a href="#popup_dialog" class="ui-btn-right" data-icon="user" data-rel="dialog" data-transition="pop">Login</a>
+			<img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+			<a href="#nav-panelstud" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+		</div>
+		<div data-role="panel" data-display="push" id="nav-panelstud">
+			<ul data-role="listview">
+				<li><a href="#pageone">Home</a></li>
+				<li><a href="#pageevents">Events</a></li>
+				<li><a href="#pageschools">Schools</a></li>
+				<li><a href="#pageprogrammes">Programmes</a></li>
+				<li><a href="#pagestudent">Student</a></li>
+				<li><a href="#pageabout">About</a></li>
+			</ul>
+		</div><!-- /panel -->
+
+		<div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+			<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+				<h3>Regulations &amp; Forms</h3>
+				<div data-role="collapsibleset">
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>1. Glossary</h3>
+					</div>
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>2. Admission</h3>
+					</div>
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>3. Programme Information</h3>
+					</div>
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>4. Research Degrees</h3>
+					</div>
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>5. Student Assessment</h3>
+					</div>
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>6. Student Ethical Conduct</h3>
+					</div>
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>7. Student Support</h3>
+					</div>
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>8. Work Placement (Under Review)</h3>
+					</div>
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>9. IT and Other Resources</h3>
+					</div>
+					<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+						<h3>10. Intellectual Property</h3>
+					</div>
+				</div>
+			</div>
+			<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+				<h3>Dissertation Guidelines</h3>
+				<div class="ui-grid-a">
+					<div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Undergraduate</a></div>
+					<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Postgraduate</a></div>
+				</div>
+			</div>
+
+			<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+				<h3>Toptal STEM Scholarships for Women</h3>
+				<p> Toptal has recently started a scholarship program to award 12 scholarships over the next 12 months to help women pursue their technical career aspirations.
+					<br><br>
+					It is open to more than just aspiring developers; the award applies to anyone with a passion for tech and we welcome applicants from all majors and any academic standing.
+					<br><br>
+					Each scholarship winner will receive a stipend, and in addition, a year of mentorship and guidance from the senior developers within our network.</p>
+				<div class="ui-grid-b">
+					<div class="ui-block-a"></div>
+					<div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Scholarship Guidelines</a></div>
+					<div class="ui-block-c"></div>
+				</div>
+			</div>
+
+			<div class="ui-grid-solo">
+				<div class="ui-block-a"><a href="https://ec.europa.eu/programmes/erasmus-plus/" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-icon-carat-r ui-btn-icon-left" id="erasmus">Erasmus+ (Programme for students)</a></div>
+			</div>
+
+			<div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+				<h3> Student Educational Loan Info</h3>
+				<div class="ui-grid-solo">
+					<div class="ui-block-a">
+						<table id="loans">
+							<tbody>
+								<tr>
+									<td>
+										<strong><u>No</u></strong></td>
+									<td>
+										<strong><u>Bank</u></strong></td>
+									<td>
+										<strong><u>Address</u></strong></td>
+									<td>
+										<strong><u>Contact Number</u></strong></td>
+									<td>
+										<strong><u>Website</u></strong></td>
+								</tr>
+								<tr>
+									<td>
+										1</td>
+									<td>
+										The Mauritius Commercial Bank</td>
+									<td>
+										Sir William Newton Street, Port Louis</td>
+									<td>
+										To any branch, 2026060</td>
+									<td>
+										<a href="http://www.mcb.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+								</tr>
+								<tr>
+									<td>
+										2</td>
+									<td>
+										SBM Bank (Mauritius)</td>
+									<td>
+										State Bank Tower, 1 Queen Elizabeth II Avenue, Port Louis</td>
+									<td>
+										To any branch, 2070111</td>
+									<td>
+										<a href="http://www.sbmgroup.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+								</tr>
+								<tr>
+									<td>
+										3</td>
+									<td>
+										The Hong Kong and Shanghai Bankiung Cooperation Limited (HSBC)</td>
+									<td>
+										HSBC Centre, 18 Cyber City, Ebene</td>
+									<td>
+										Mr. Kushal - Customer Care, 2038333</td>
+									<td>
+										<a href="http://www.hsbc.co.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+								</tr>
+								<tr>
+									<td>
+										4</td>
+									<td>
+										Bramer Banking Cooperation Ltd</td>
+									<td>
+										1, Queen Street, Place D' Armes, Port-Louis</td>
+									<td>
+										4054400</td>
+									<td>
+										<a href="http://www.bramerbank.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+								</tr>
+								<tr>
+									<td>
+										5</td>
+									<td>
+										Bank One Limited</td>
+									<td>
+										16, Sir William Newton Street, Port - Louis</td>
+									<td>
+										2029200</td>
+									<td>
+										<a href="http://www.bankone.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+								</tr>
+								<tr>
+									<td>
+										6</td>
+									<td>
+										Mauritius Post and Cooperative Bank Ltd</td>
+									<td>
+										Lot 25, Bank Street, Cybercity, Ebene</td>
+									<td>
+										Call Centre Team, 4059400</td>
+									<td>
+										<a href="http://www.mpcb.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+								</tr>
+								<tr>
+									<td>
+										7</td>
+									<td>
+										Banque des Mascaraignes Ltee</td>
+									<td>
+										Maeva Tower, Corner Bank Street and Silicon Avenue, Lot 23, Ebene</td>
+									<td>
+										2078643</td>
+									<td>
+										<a href="http://www.banquedesmascareignes.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+								</tr>
+								<tr>
+									<td>
+										8</td>
+									<td>
+										ABC Banking Cooperation Ltd</td>
+									<td>
+										WEAL House, Duke of Edinburgh, Avenue Place D' Armes, 11328, Port-Louis</td>
+									<td>
+										2080088, 2113091</td>
+									<td>
+										<a href="http://www.ABCBanking.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+								</tr>
+								<tr>
+									<td>
+										9</td>
+									<td>
+										Employees Welfare Fund</td>
+									<td>
+										6th Floor, Moorgate House, Sir William Newton Street, Port-Louis</td>
+									<td>
+										Ms. Hemlata Conhyedass, 2088353</td>
+									<td>
+										<a href="http://www.ewf.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div data-role="footer" style="font-size:80%;">
+			<h5>
+				Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+		</div>
+	</div>
+
+
+
+	<!-- -------------------------------------------------------------------PAGE EVENTS-------------------------------------------------------------- -->
+	<div data-role="page" id="pageevents" class="jqm-demos ui-responsive-panel" data-url="pageevents">
+		<div data-role="header" style="overflow:hidden;" class="hea">
+			<a href="#popup_dialog" class="ui-btn-right" data-icon="user" data-rel="dialog" data-transition="pop">Login</a>
+			<img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+			<a href="#nav-panelevt" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+		</div>
+
+
+		<div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+			<p>Use the filter below to find events of UTMs:</p>
+			<form class="ui-filterable">
+				<input id="filter-input" data-type="search">
+			</form>
+			<ul data-role="listview" data-filter="true" data-input="#filter-input">
+				<li><a href="#lounge">MITIA SPORTS AND FUN DAY</a></li>
+				<li><a href="#">Activity Week</a></li>
+				<li><a href="#">1 fete parla</a></li>
+				<li><a href="#">Village Vanguard</a></li>
+			</ul>
+		</div>
+		<div data-role="panel" data-display="push" id="nav-panelevt">
+			<ul data-role="listview">
+				<li><a href="#pageone">Home</a></li>
+				<li><a href="#pageevents">Events</a></li>
+				<li><a href="#pageschools">Schools</a></li>
+				<li><a href="#pageprogrammes">Programmes</a></li>
+				<li><a href="#pagestudent">Student</a></li>
+				<li><a href="#pageabout">About</a></li>
+			</ul>
+		</div><!-- /panel -->
+		<div data-role="footer" style="font-size:80%;">
+			<h5>
+				Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+		</div>
+	</div>
+
+
+
+	<!-- -------------------------------------------------------------------EVENTS ONCLICK--------------------------------------------------------- -->
+	<div data-role="page" id="lounge" class="jqm-demos ui-responsive-panel" data-url="lounge">
+		<div data-role="header" style="overflow:hidden;" class="hea">
+			<a href="#popup_dialog" class="ui-btn-right" data-icon="user" data-rel="dialog" data-transition="pop">Login</a>
+			<img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+			<a href="#nav-panel" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+		</div>
+		<div data-role="panel" data-display="push" id="nav-panel">
+			<ul data-role="listview">
+				<li><a href="#pageone">Home</a></li>
+				<li><a href="#pageevents">Events</a></li>
+				<li><a href="#pageschools">Schools</a></li>
+				<li><a href="#pageprogrammes">Programmes</a></li>
+				<li><a href="#pagestudent">Student</a></li>
+				<li><a href="#pageabout">About</a></li>
+			</ul>
+		</div><!-- /panel -->
+
+		<div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+
+			<div class="ui-grid-b">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b">
+					<p>Find event location:</p><address>Cascavelle</address>
+					<iframe
+						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7484.586476202686!2d57.41023692694132!3d-20.288125982370875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x217c439f0031ae6b%3A0x71b4d7c4f7e5efcc!2sCascavelle!5e0!3m2!1sen!2smu!4v1571556029142!5m2!1sen!2smu"
+						width="600" height="450" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+					<a href="#pageevents" class="ui-btn ui-icon-back ui-btn-icon-left" data-rel="back">Back</a>
+				</div>
+				<div class="ui-block-c"></div>
+			</div><!-- /grid-b -->
+
+
+		</div>
+
+		<div data-role="footer" style="font-size:80%;">
+			<h5>
+				Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+		</div>
+	</div>
+
+
+
+	<!-- ----------------------------------------------------------------------PAGE PROGRAMMES-------------------------------------- -->
+	<div data-role="page" id="pageprogrammes" class="jqm-demos ui-responsive-panel" data-url="pageprogrammes">
+		<div data-role="header" style="overflow:hidden;" class="hea">
+			<a href="#popup_dialog" class="ui-btn-right" data-icon="user" data-rel="dialog" data-transition="pop">Login</a>
+			<img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+			<a href="#nav-panelprog" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+		</div>
+		<div data-role="panel" data-display="push" id="nav-panelprog">
+			<ul data-role="listview">
+				<li><a href="#pageone">Home</a></li>
+				<li><a href="#pageevents">Events</a></li>
+				<li><a href="#pageschools">Schools</a></li>
+				<li><a href="#pageprogrammes">Programmes</a></li>
+				<li><a href="#pagestudent">Student</a></li>
+				<li><a href="#pageabout">About</a></li>
+			</ul>
+		</div><!-- /panel -->
+
+		<div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+			<div data-role="collapsible" data-theme="b" data-content-theme="b">
+				<h4>Postgraduate</h4>
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Business, Management and Finance (SBMF) </h3>
+						<div>
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">MBA - Financial Risk Management</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">MBA - Finance and Investment </div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="height:90px">MSc International Business and Economics</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="height:90px">PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="height:90px">2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+						</div>
+					</div>
+
+				</div>
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Health Sciences (SHS) </h3>
+						<div>
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">MSc Mental Health</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">MSc Health Services Management</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+
+						</div>
+					</div>
+				</div>
+
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Innovative Technology and Engineering (SITE) </h3>
+						<div>
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">MSc Applied Statistics with Operational Research</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT/FT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">1 yr / 1.5 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">MSc Software Engineering</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT/FT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">1 yr / 1.5 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="height:90px">MSc Mobile Communications and Computing</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT/FT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">1 yr / 1.5 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+						</div>
+					</div>
+				</div>
+
+
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Sustainable Development and Tourism (SSDT) </h3>
+						<div>
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">MSc Property and Resort Management </div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">MA Communication & Public Relations</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">MSc Educational Administration and Technology</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+			<div data-role="collapsible" data-theme="b" data-content-theme="b">
+				<h4>Undergraduate</h4>
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Business, Management and Finance (SBMF) </h3>
+						<div>
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Accounting with Finance (Accredited by ACCA)</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Financial Services with Law</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="height:90px">BSc (Hons) Banking and International Finance</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="height:90px">3 yrs / 4 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+						</div>
+					</div>
+
+				</div>
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Health Sciences (SHS) </h3>
+						<div>
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">BSc. (Hons) Gerontology</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">BSc. (Hons) Public Health Engineering (Top-Up)</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">1.5 yrs / 2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+
+						</div>
+					</div>
+				</div>
+
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Innovative Technology and Engineering (SITE) </h3>
+						<div>
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">BEng (Hons) Civil Engineering (Top Up) (run by JSSATE, Mauritius)</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">2.5 yrs / 3.5 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Data Science with Interactive Marketing</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="height:90px">BSc (Hons) Software Engineering</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">3 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+						</div>
+					</div>
+				</div>
+
+
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Sustainable Development and Tourism (SSDT) </h3>
+						<div>
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Environmental Health</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Services Management and Marketing</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+							<div class="ui-grid-b">
+								<div class="ui-block-a">
+									<div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Tourism and Hospitality Management</div>
+								</div>
+								<div class="ui-block-b">
+									<div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div>
+								</div>
+								<div class="ui-block-c">
+									<div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div>
+								</div>
+							</div><!-- /grid-b -->
+
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div data-role="footer" style="font-size:80%;">
+			<h5>
+				Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+		</div>
+	</div>
+
+
+
+
+
+	<!-- ----------------------------------------------------------------PAGE ABOUT---------------------------------------------------------- -->
+	<div data-role="page" id="pageabout" class="jqm-demos ui-responsive-panel" data-url="pageabout">
+		<div data-role="header" style="overflow:hidden;" class="hea">
+			<a href="#popup_dialog" class="ui-btn-right" data-icon="user" data-rel="dialog" data-transition="pop">Login</a>
+			<img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+			<a href="#nav-panelabout" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+		</div>
+		<div data-role="panel" data-display="push" id="nav-panelabout">
+			<ul data-role="listview">
+				<li><a href="#pageone">Home</a></li>
+				<li><a href="#pageevents">Events</a></li>
+				<li><a href="#pageschools">Schools</a></li>
+				<li><a href="#pageprogrammes">Programmes</a></li>
+				<li><a href="#pagestudent">Student</a></li>
+				<li><a href="#pageabout">About</a></li>
+			</ul>
+		</div><!-- /panel -->
+
+		<div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+			<p>This is About page</p>
+		</div>
+
+		<div data-role="footer" style="font-size:80%;">
+			<h5>
+				Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+		</div>
+	</div>
+
+
+
+
+	<!-- --------------------------------------------------------END OF GUEST PAGE-------------------------------------------------------------- -->
+
+
+
+	<!-- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+
+
+	<!-- ----------------------------------------------------Page Students---------------------------------------------------------------------------------- -->
+
+
+
+
+
+	  <!-- --------------------------------------------------------------Home Student------------------------------------------------------------------------- -->
+	  <div data-role="page" id="home_student" class="jqm-demos ui-responsive-panel" data-url="home_student">
+	    <div data-role="header" style="overflow:hidden;" class="hea">
+	      <img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+	      <a href="#stu_nav_home" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+	      <button id="btn_logout" onclick="logout()" data-icon="user">Log Out</button>
+	      <p class="stu_corner">
+	        Welcome Username
+	      </p>
+	    </div>
+
+	    <div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+	      <div class="ui-grid-solo">
+	        <div class="ui-block-a">
+	          <div class="ui-bar ui-bar-a" style="height:100%">
+	            <h3>News</h3>
+	            <ul data-role="listview" data-inset="true">
+	              <li data-role="list-divider">Friday, October 8, 2010 <span class="ui-li-count">2</span></li>
+	              <li><a href="">
+	                  <h2>Stephen Weber</h2>
+	                  <p><strong>You've been invited to a meeting at Filament Group in Boston, MA</strong></p>
+	                  <p>Hey Stephen, if you're available at 10am tomorrow, we've got a meeting with the jQuery team.</p>
+	                  <p class="ui-li-aside"><strong>6:24</strong>PM</p>
+	                </a></li>
+	              <li><a href="">
+	                  <h2>jQuery Team</h2>
+	                  <p><strong>Boston Conference Planning</strong></p>
+	                  <p>In preparation for the upcoming conference in Boston, we need to start gathering a list of sponsors and speakers.</p>
+	                  <p class="ui-li-aside"><strong>9:18</strong>AM</p>
+	                </a></li>
+	              <li data-role="list-divider">Thursday, October 7, 2010 <span class="ui-li-count">1</span></li>
+	              <li><a href="">
+	                  <h2>Avery Walker</h2>
+	                  <p><strong>Re: Dinner Tonight</strong></p>
+	                  <p>Sure, let's plan on meeting at Highland Kitchen at 8:00 tonight. Can't wait!</p>
+	                  <p class="ui-li-aside"><strong>4:48</strong>PM</p>
+	                </a></li>
+	            </ul>
+	          </div>
+	        </div>
+
+
+	      </div><!-- /grid-a -->
+	    </div>
+
+	    <div data-role="panel" data-display="push" id="stu_nav_home">
+	      <ul data-role="listview">
+	        <li>
+	          <div class="stu_corner">UserName</div>
+	        </li>
+	        <li><a href="#home_student">Home</a></li>
+	        <li><a href="#event_student">Events</a></li>
+	        <li><a href="#pageschools_students">Schools</a></li>
+	        <li><a href="#programmes_students">Programmes</a></li>
+	        <li><a href="#profile_students">Profile</a></li>
+	        <li><a href="#about_student">About</a></li>
+	      </ul>
+	    </div><!-- /panel -->
+
+	    <div data-role="footer" style="font-size:80%;">
+	      <h5>
+	        Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+	    </div>
+	  </div>
+
+
+
+
+	  <!-- --------------------------------------------------------------PAGE SCHOOLS STUDENTS---------------------------------------------------------------------------- -->
+	  <div data-role="page" id="pageschools_students" class="jqm-demos ui-responsive-panel" data-url="pageschools_students">
+	    <div data-role="header" style="overflow:hidden;" class="hea">
+
+	      <img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+
+	      <a href="#nav-panelschool" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+	      <button id="btn_logout" onclick="logout()" data-icon="user">Log Out</button>
+	    </div>
+
+	    <div data-role="main" class="ui-content jqm-content jqm-fullwidth" id="schoolbody">
+
+
+	      <div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+	        <div data-role="collapsible" style="margin-bottom: 10px;">
+	          <h3>School of Business, Management and Finance (SBMF) </h3>
+
+	          <div class="ui-grid-b">
+	            <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini" target="_blank">
+	                <!-- <object data="pdf/SBMF/AmendedMBA_GeneralPT_23sep2013_.pdf" type="application/pdf" width="300" height="200"> -->
+	                <!-- href="pdf/SBMF/AmendedMBA_GeneralPT_23sep2013_.pdf" </object> </a>-->
+	                Undergraduate</a>
+	            </div>
+
+	            <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini" target="_blank">Postgraduate</a></div>
+
+	            <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini" target="_blank">Staff List</a></div>
+	          </div>
+	          <div class="ui-grid-b">
+	            <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Exam Timetable</a></div>
+	            <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Semester TimeTable</a></div>
+	            <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Results</a></div>
+	          </div>
+	        </div>
+
+	        <div data-role="collapsible" style="margin-bottom: 10px;">
+	          <h3>School of Health Sciences (SHS)</h3>
+	          <div class="ui-grid-b">
+	            <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Undergraduate</a></div>
+	            <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Postgraduate</a></div>
+	            <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Staff List</a></div>
+	          </div>
+	          <div class="ui-grid-b">
+	            <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Exam Timetable</a></div>
+	            <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Semester TimeTable</a></div>
+	            <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Results</a></div>
+	          </div>
+	        </div>
+	        <div data-role="collapsible" style="margin-bottom: 10px;">
+	          <h3>School of Innovative Technologies and Engineering (SITE)</h3>
+	          <div class="ui-grid-b">
+	            <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Undergraduate</a></div>
+	            <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Postgraduate</a></div>
+	            <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Staff List</a></div>
+	          </div>
+	          <div class="ui-grid-b">
+	            <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Exam Timetable</a></div>
+	            <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Semester TimeTable</a></div>
+	            <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Results</a></div>
+	          </div>
+	        </div>
+	        <div data-role="collapsible" style="margin-bottom: 10px;">
+	          <h3>School of Sustainable Development and Tourism (SSDT)</h3>
+	          <div class="ui-grid-b">
+	            <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Undergraduate</a></div>
+	            <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Postgraduate</a></div>
+	            <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Staff List</a></div>
+	          </div>
+	          <div class="ui-grid-b">
+	            <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Exam Timetable</a></div>
+	            <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Semester TimeTable</a></div>
+	            <div class="ui-block-c"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Results</a></div>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	    <div data-role="panel" data-display="push" id="nav-panelschool">
+	      <ul data-role="listview">
+	        <li>
+	          <div class="stu_corner">UserName</div>
+	        </li>
+	        <li><a href="#home_student">Home</a></li>
+	        <li><a href="#event_student">Events</a></li>
+	        <li><a href="#pageschools_students">Schools</a></li>
+	        <li><a href="#programmes_students">Programmes</a></li>
+	        <li><a href="#profile_students">Profile</a></li>
+	        <li><a href="#about_student">About</a></li>
+	      </ul>
+	    </div><!-- /panel -->
+
+	    <div data-role="footer" style="font-size:80%;">
+	      <h5>
+	        Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+	    </div>
+	  </div>
+
+
+
+	  <!-- -----------------------------------------------------------------------PAGE PROFILE STUDENTS----------------------------------------------------------------------- -->
+	  <div data-role="page" id="profile_students" class="jqm-demos ui-responsive-panel" data-url="profile_students">
+	    <div data-role="header" style="overflow:hidden;" class="hea">
+
+	      <img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+	      <a href="#nav-panelstud" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+	      <button id="btn_logout" onclick="logout()" data-icon="user">Log Out</button>
+	    </div>
+	    <div data-role="panel" data-display="push" id="nav-panelstud">
+	      <ul data-role="listview">
+	        <li>
+	          <div class="stu_corner">UserName</div>
+	        </li>
+	        <li><a href="#home_student">Home</a></li>
+	        <li><a href="#event_student">Events</a></li>
+	        <li><a href="#pageschools_students">Schools</a></li>
+	        <li><a href="#programmes_students">Programmes</a></li>
+	        <li><a href="#profile_students">Profile</a></li>
+	        <li><a href="#about_student">About</a></li>
+	      </ul>
+	    </div><!-- /panel -->
+
+	    <div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+	      <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+	        <h3>Regulations &amp; Forms</h3>
+	        <div data-role="collapsibleset">
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>1. Glossary</h3>
+	          </div>
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>2. Admission</h3>
+	          </div>
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>3. Programme Information</h3>
+	          </div>
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>4. Research Degrees</h3>
+	          </div>
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>5. Student Assessment</h3>
+	          </div>
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>6. Student Ethical Conduct</h3>
+	          </div>
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>7. Student Support</h3>
+	          </div>
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>8. Work Placement (Under Review)</h3>
+	          </div>
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>9. IT and Other Resources</h3>
+	          </div>
+	          <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r" data-content-theme="e">
+	            <h3>10. Intellectual Property</h3>
+	          </div>
+	        </div>
+	      </div>
+	      <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+	        <h3>Dissertation Guidelines</h3>
+	        <div class="ui-grid-a">
+	          <div class="ui-block-a"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Undergraduate</a></div>
+	          <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Postgraduate</a></div>
+	        </div>
+	      </div>
+
+	      <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+	        <h3>Toptal STEM Scholarships for Women</h3>
+	        <p> Toptal has recently started a scholarship program to award 12 scholarships over the next 12 months to help women pursue their technical career aspirations.
+	          <br><br>
+	          It is open to more than just aspiring developers; the award applies to anyone with a passion for tech and we welcome applicants from all majors and any academic standing.
+	          <br><br>
+	          Each scholarship winner will receive a stipend, and in addition, a year of mentorship and guidance from the senior developers within our network.</p>
+	        <div class="ui-grid-b">
+	          <div class="ui-block-a"></div>
+	          <div class="ui-block-b"><a href="#" class="ui-shadow ui-btn ui-corner-all ui-mini">Scholarship Guidelines</a></div>
+	          <div class="ui-block-c"></div>
+	        </div>
+	      </div>
+
+	      <div class="ui-grid-solo">
+	        <div class="ui-block-a"><a href="https://ec.europa.eu/programmes/erasmus-plus/" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-icon-carat-r ui-btn-icon-left" id="erasmus">Erasmus+ (Programme for students)</a></div>
+	      </div>
+
+	      <div data-role="collapsible" style="margin-bottom: 10px;" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+	        <h3> Student Educational Loan Info</h3>
+	        <div class="ui-grid-solo">
+	          <div class="ui-block-a">
+	            <table id="loans">
+	              <tbody>
+	                <tr>
+	                  <td>
+	                    <strong><u>No</u></strong></td>
+	                  <td>
+	                    <strong><u>Bank</u></strong></td>
+	                  <td>
+	                    <strong><u>Address</u></strong></td>
+	                  <td>
+	                    <strong><u>Contact Number</u></strong></td>
+	                  <td>
+	                    <strong><u>Website</u></strong></td>
+	                </tr>
+	                <tr>
+	                  <td>
+	                    1</td>
+	                  <td>
+	                    The Mauritius Commercial Bank</td>
+	                  <td>
+	                    Sir William Newton Street, Port Louis</td>
+	                  <td>
+	                    To any branch, 2026060</td>
+	                  <td>
+	                    <a href="http://www.mcb.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+	                </tr>
+	                <tr>
+	                  <td>
+	                    2</td>
+	                  <td>
+	                    SBM Bank (Mauritius)</td>
+	                  <td>
+	                    State Bank Tower, 1 Queen Elizabeth II Avenue, Port Louis</td>
+	                  <td>
+	                    To any branch, 2070111</td>
+	                  <td>
+	                    <a href="http://www.sbmgroup.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+	                </tr>
+	                <tr>
+	                  <td>
+	                    3</td>
+	                  <td>
+	                    The Hong Kong and Shanghai Bankiung Cooperation Limited (HSBC)</td>
+	                  <td>
+	                    HSBC Centre, 18 Cyber City, Ebene</td>
+	                  <td>
+	                    Mr. Kushal - Customer Care, 2038333</td>
+	                  <td>
+	                    <a href="http://www.hsbc.co.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+	                </tr>
+	                <tr>
+	                  <td>
+	                    4</td>
+	                  <td>
+	                    Bramer Banking Cooperation Ltd</td>
+	                  <td>
+	                    1, Queen Street, Place D' Armes, Port-Louis</td>
+	                  <td>
+	                    4054400</td>
+	                  <td>
+	                    <a href="http://www.bramerbank.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+	                </tr>
+	                <tr>
+	                  <td>
+	                    5</td>
+	                  <td>
+	                    Bank One Limited</td>
+	                  <td>
+	                    16, Sir William Newton Street, Port - Louis</td>
+	                  <td>
+	                    2029200</td>
+	                  <td>
+	                    <a href="http://www.bankone.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+	                </tr>
+	                <tr>
+	                  <td>
+	                    6</td>
+	                  <td>
+	                    Mauritius Post and Cooperative Bank Ltd</td>
+	                  <td>
+	                    Lot 25, Bank Street, Cybercity, Ebene</td>
+	                  <td>
+	                    Call Centre Team, 4059400</td>
+	                  <td>
+	                    <a href="http://www.mpcb.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+	                </tr>
+	                <tr>
+	                  <td>
+	                    7</td>
+	                  <td>
+	                    Banque des Mascaraignes Ltee</td>
+	                  <td>
+	                    Maeva Tower, Corner Bank Street and Silicon Avenue, Lot 23, Ebene</td>
+	                  <td>
+	                    2078643</td>
+	                  <td>
+	                    <a href="http://www.banquedesmascareignes.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+	                </tr>
+	                <tr>
+	                  <td>
+	                    8</td>
+	                  <td>
+	                    ABC Banking Cooperation Ltd</td>
+	                  <td>
+	                    WEAL House, Duke of Edinburgh, Avenue Place D' Armes, 11328, Port-Louis</td>
+	                  <td>
+	                    2080088, 2113091</td>
+	                  <td>
+	                    <a href="http://www.ABCBanking.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+	                </tr>
+	                <tr>
+	                  <td>
+	                    9</td>
+	                  <td>
+	                    Employees Welfare Fund</td>
+	                  <td>
+	                    6th Floor, Moorgate House, Sir William Newton Street, Port-Louis</td>
+	                  <td>
+	                    Ms. Hemlata Conhyedass, 2088353</td>
+	                  <td>
+	                    <a href="http://www.ewf.mu" target="_blank" class="ui-shadow ui-btn ui-corner-all ui-mini ui-icon-navigation ui-btn-icon-left">Visit Website</a></td>
+	                </tr>
+	              </tbody>
+	            </table>
+	          </div>
+
+	        </div>
+	      </div>
+	    </div>
+	    <div data-role="footer" style="font-size:80%;">
+	      <h5>
+	        Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+	    </div>
+	  </div>
+
+
+
+	  <!-- ----------------------------------------------------------PAGE EVENTS STUDENTS------------------------------------------------------------------ -->
+	  <div data-role="page" id="event_student" class="jqm-demos ui-responsive-panel" data-url="event_student">
+	    <div data-role="header" style="overflow:hidden;" class="hea">
+
+	      <img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+	      <a href="#nav-panelevt" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+	      <button id="btn_logout" onclick="logout()" data-icon="user">Log Out</button>
+	    </div>
+
+
+	    <div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+	      <p>Use the filter below to find events of UTMs:</p>
+	      <form class="ui-filterable">
+	        <input id="filter-input" data-type="search">
+	      </form>
+	      <ul data-role="listview" data-filter="true" data-input="#filter-input">
+	        <li><a href="#lounge">MITIA SPORTS AND FUN DAY</a></li>
+	        <li><a href="#">Activity Week</a></li>
+	        <li><a href="#">1 fete parla</a></li>
+	        <li><a href="#">Village Vanguard</a></li>
+	      </ul>
+	    </div>
+	    <div data-role="panel" data-display="push" id="nav-panelevt">
+	      <ul data-role="listview">
+	        <li>
+	          <div class="stu_corner">UserName</div>
+	        </li>
+	        <li><a href="#home_student">Home</a></li>
+	        <li><a href="#event_student">Events</a></li>
+	        <li><a href="#pageschools_students">Schools</a></li>
+	        <li><a href="#programmes_students">Programmes</a></li>
+	        <li><a href="#profile_students">Profile</a></li>
+	        <li><a href="#about_student">About</a></li>
+	      </ul>
+	    </div><!-- /panel -->
+	    <div data-role="footer" style="font-size:80%;">
+	      <h5>
+	        Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+	    </div>
+	  </div>
+
+
+
+	  <!-- -----------------------------------------------------------------EVENTS ONCLICK STUDENTS------------------------------------------------------------------------ -->
+	  <div data-role="page" id="lounge" class="jqm-demos ui-responsive-panel" data-url="lounge">
+	    <div data-role="header" style="overflow:hidden;" class="hea">
+
+	      <img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+	      <a href="#nav-panel" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+	      <button id="btn_logout" onclick="logout()" data-icon="user">Log Out</button>
+	    </div>
+	    <div data-role="panel" data-display="push" id="nav-panel">
+	      <ul data-role="listview">
+	        <li>
+	          <div class="stu_corner">UserName</div>
+	        </li>
+	        <li><a href="#home_student">Home</a></li>
+	        <li><a href="#event_student">Events</a></li>
+	        <li><a href="#pageschools_students">Schools</a></li>
+	        <li><a href="#programmes_students">Programmes</a></li>
+	        <li><a href="#profile_students">Profile</a></li>
+	        <li><a href="#about_student">About</a></li>
+	      </ul>
+	    </div><!-- /panel -->
+
+	    <div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+
+	      <div class="ui-grid-b">
+	        <div class="ui-block-a"></div>
+	        <div class="ui-block-b">
+	          <p>Find event location:</p><address>Cascavelle</address>
+	          <iframe
+	            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7484.586476202686!2d57.41023692694132!3d-20.288125982370875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x217c439f0031ae6b%3A0x71b4d7c4f7e5efcc!2sCascavelle!5e0!3m2!1sen!2smu!4v1571556029142!5m2!1sen!2smu"
+	            width="600" height="450" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+	          <a href="#event_student" class="ui-btn ui-icon-back ui-btn-icon-left" data-rel="back">Back</a>
+	        </div>
+	        <div class="ui-block-c"></div>
+	      </div><!-- /grid-b -->
+
+
+	    </div>
+
+	    <div data-role="footer" style="font-size:80%;">
+	      <h5>
+	        Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+	    </div>
+	  </div>
+
+
+
+	  <!-- ---------------------------------------------------------------------PAGE PROGRAMMES STUDENTS-------------------------------------------------------- -->
+	  <div data-role="page" id="programmes_students" class="jqm-demos ui-responsive-panel" data-url="programmes_students">
+	    <div data-role="header" style="overflow:hidden;" class="hea">
+
+	      <img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+	      <a href="#nav-panelprog" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+	      <button id="btn_logout" onclick="logout()" data-icon="user">Log Out</button>
+	    </div>
+	    <div data-role="panel" data-display="push" id="nav-panelprog">
+	      <ul data-role="listview">
+	        <li>
+	          <div class="stu_corner">UserName</div>
+	        </li>
+	        <li><a href="#home_student">Home</a></li>
+	        <li><a href="#event_student">Events</a></li>
+	        <li><a href="#pageschools_students">Schools</a></li>
+	        <li><a href="#programmes_students">Programmes</a></li>
+	        <li><a href="#profile_students">Profile</a></li>
+	        <li><a href="#about_student">About</a></li>
+	      </ul>
+	    </div><!-- /panel -->
+
+	    <div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+	      <div data-role="collapsible" data-theme="b" data-content-theme="b">
+				<h4>Postgraduate</h4>
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Business, Management and Finance (SBMF) </h3>
+						<div>
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">MBA - Financial Risk Management</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">MBA - Finance and Investment </div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="height:90px">MSc International Business and Economics</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="height:90px">PT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="height:90px">2 yrs</div></div>
+				</div><!-- /grid-b -->
+
+
+
+						</div>
+					</div>
+
+				</div>
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Health Sciences (SHS) </h3>
+						<div>
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">MSc Mental Health</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">MSc Health Services Management</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div></div>
+				</div><!-- /grid-b -->
+
+
+
+
+						</div>
+					</div>
+				</div>
+
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Innovative Technology and Engineering (SITE) </h3>
+						<div>
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">MSc Applied Statistics with Operational Research</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT/FT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">1 yr / 1.5 yrs</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">MSc Software Engineering</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT/FT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">1 yr / 1.5 yrs</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="height:90px">MSc Mobile Communications and Computing</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT/FT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">1 yr / 1.5 yrs</div></div>
+				</div><!-- /grid-b -->
+
+
+
+						</div>
+					</div>
+				</div>
+
+
+
+				<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+					<div data-role="collapsible" style="margin-bottom: 10px;">
+						<h3>School of Sustainable Development and Tourism (SSDT) </h3>
+						<div>
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">MSc Property and Resort Management </div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div></div>
+				</div><!-- /grid-b -->
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">MA Communication & Public Relations</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div></div>
+				</div><!-- /grid-b -->
+
+
+
+				<div class="ui-grid-b">
+				<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">MSc Educational Administration and Technology</div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">PT</div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div></div>
+				</div><!-- /grid-b -->
+
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+					<div data-role="collapsible" data-theme="b" data-content-theme="b">
+						<h4>Undergraduate</h4>
+						<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+							<div data-role="collapsible" style="margin-bottom: 10px;">
+								<h3>School of Business, Management and Finance (SBMF) </h3>
+								<div>
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Accounting with Finance (Accredited by ACCA)</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Financial Services with Law</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="height:90px">BSc (Hons) Banking and International Finance</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="height:90px">3 yrs / 4 yrs</div></div>
+						</div><!-- /grid-b -->
+
+
+
+								</div>
+							</div>
+
+						</div>
+
+						<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+							<div data-role="collapsible" style="margin-bottom: 10px;">
+								<h3>School of Health Sciences (SHS) </h3>
+								<div>
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">BSc. (Hons) Gerontology</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">BSc. (Hons) Public Health Engineering (Top-Up)</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">1.5 yrs / 2 yrs</div></div>
+						</div><!-- /grid-b -->
+
+
+
+
+								</div>
+							</div>
+						</div>
+
+
+						<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+							<div data-role="collapsible" style="margin-bottom: 10px;">
+								<h3>School of Innovative Technology and Engineering (SITE) </h3>
+								<div>
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">BEng (Hons) Civil Engineering (Top Up) (run by JSSATE, Mauritius)</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">2.5 yrs / 3.5 yrs</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Data Science with Interactive Marketing</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="height:90px">BSc (Hons) Software Engineering</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">3 yrs</div></div>
+						</div><!-- /grid-b -->
+
+
+
+								</div>
+							</div>
+						</div>
+
+
+
+						<div data-role="collapsibleset" data-theme="a" data-content-theme="c" data-collapsed-icon="carat-d" data-expanded-icon="carat-r">
+							<div data-role="collapsible" style="margin-bottom: 10px;">
+								<h3>School of Sustainable Development and Tourism (SSDT) </h3>
+								<div>
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Name</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Mode</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a title_p" style="color:rgb(152, 0, 0)">Duration</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Environmental Health</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div></div>
+						</div><!-- /grid-b -->
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Services Management and Marketing</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">3 yrs / 4 yrs</div></div>
+						</div><!-- /grid-b -->
+
+
+
+						<div class="ui-grid-b">
+						<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:90px">BSc (Hons) Tourism and Hospitality Management</div></div>
+						<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:90px">FT/PT</div></div>
+						<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:90px">2 yrs</div></div>
+						</div><!-- /grid-b -->
+
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+	    </div>
+
+	    <div data-role="footer" style="font-size:80%;">
+	      <h5>
+	        Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+	    </div>
+	  </div>
+
+
+
+
+	<!-- ---------------------------------------------------------------------PAGE ABOUT---------------------------------------------------------------- -->
+	<div data-role="page" id="about_student" class="jqm-demos ui-responsive-panel" data-url="about_student">
+	  <div data-role="header" style="overflow:hidden;" class="hea">
+
+	    <img alt="UTM Logo" src="img/UTM.png" class="utmLogo" style="margin-left:30%;margin-right:30%;width:40%;" />
+	    <a href="#nav-panelabout" data-icon="bars" data-iconpos="notext" class="ui-btn-left"></a>
+	    <button id="btn_logout" onclick="logout()" data-icon="user">Log Out</button>
+	  </div>
+	  <div data-role="panel" data-display="push" id="nav-panelabout">
+	    <ul data-role="listview">
+	      <li>
+	        <div class="stu_corner">UserName</div>
+	      </li>
+	      <li><a href="#home_student">Home</a></li>
+	      <li><a href="#event_student">Events</a></li>
+	      <li><a href="#pageschools_students">Schools</a></li>
+	      <li><a href="#programmes_students">Programmes</a></li>
+	      <li><a href="#profile_students">Profile</a></li>
+	      <li><a href="#about_student">About</a></li>
+	    </ul>
+	  </div><!-- /panel -->
+
+	  <div data-role="main" class="ui-content jqm-content jqm-fullwidth">
+	    <p>This is About page</p>
+	  </div>
+
+	  <div data-role="footer" style="font-size:80%;">
+	    <h5>
+	      Copyright &copy; 2019 University Of Technology, Mauritius.<br> All Rights Reserved.</h5>
+	  </div>
+	</div>
+
+
+
+	<!-- ------------------------------------------------------------------------END OF STUDENT PAGE---------------------------------------------------------------- -->
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
